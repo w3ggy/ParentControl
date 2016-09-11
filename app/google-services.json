@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "507969753301",
+    "firebase_url": "https://parentcontrol-2594b.firebaseio.com",
+    "project_id": "parentcontrol-2594b",
+    "storage_bucket": "parentcontrol-2594b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:507969753301:android:9890e899d0bd351d",
+        "android_client_info": {
+          "package_name": "com.abramov.artyom.parentcontrol"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "507969753301-psir7nn7i8ocjo93bv60ftvd4malgqgt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCPJl9p1zEu7o1vmXVqCc4hzttthcv2c2U"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
