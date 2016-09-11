@@ -2,6 +2,7 @@ package com.abramov.artyom.parentcontrol.services;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
@@ -9,6 +10,7 @@ import com.abramov.artyom.parentcontrol.interfaces.Constants;
 import com.abramov.artyom.parentcontrol.services.sockets.client.SocketClientThread;
 import com.abramov.artyom.parentcontrol.services.sockets.server.SocketServerThread;
 import com.abramov.artyom.parentcontrol.utils.Logger;
+import com.abramov.artyom.parentcontrol.utils.NetworkUtils;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -18,7 +20,7 @@ import java.util.Enumeration;
 
 public class LocationService extends Service {
     public static final String EXTRA_IS_SERVER = "extra_is_server";
-    private Thread mCurrentSocket;
+    private AsyncTask mCurrentSocket;
     private static final String TAG = LocationService.class.getSimpleName();
 
     @Nullable
@@ -38,8 +40,6 @@ public class LocationService extends Service {
         if (mCurrentSocket == null) {
             Logger.d(TAG, "Location service wasn't start");
             stopSelf(startId);
-        } else {
-            mCurrentSocket.start();
         }
 
         return super.onStartCommand(intent, flags, startId);
@@ -49,7 +49,7 @@ public class LocationService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        Logger.d(TAG, "Current device ip is " + getIpAddress());
+        Logger.d(TAG, "Current device ip is " + NetworkUtils.getIpAddress());
     }
 
     @Override
@@ -66,54 +66,13 @@ public class LocationService extends Service {
         }*/
     }
 
-    private Thread startSocketServer() {
-        try {
-            return new SocketServerThread();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Logger.d(TAG, "Was exception after start server socket");
-            return null;
-        }
+    private AsyncTask startSocketServer() {
+//        Logger.d(TAG, "Was exception after start server socket");
+        return new SocketServerThread(this);
     }
 
-    private Thread startSocketClient() {
-        try {
-            return new SocketClientThread("192.168.1.34", Constants.SOCKET_PORT);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Logger.d(TAG, "Was exception after start client socket");
-            return null;
-        }
-    }
-
-    private String getIpAddress() {
-        String ip = "";
-        try {
-            Enumeration<NetworkInterface> enumNetworkInterfaces = NetworkInterface
-                    .getNetworkInterfaces();
-            while (enumNetworkInterfaces.hasMoreElements()) {
-                NetworkInterface networkInterface = enumNetworkInterfaces
-                        .nextElement();
-                Enumeration<InetAddress> enumInetAddress = networkInterface
-                        .getInetAddresses();
-                while (enumInetAddress.hasMoreElements()) {
-                    InetAddress inetAddress = enumInetAddress.nextElement();
-
-                    if (inetAddress.isSiteLocalAddress()) {
-                        ip += "SiteLocalAddress: "
-                                + inetAddress.getHostAddress() + "\n";
-                    }
-
-                }
-
-            }
-
-        } catch (SocketException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            ip += "Something Wrong! " + e.toString() + "\n";
-        }
-
-        return ip;
+    private AsyncTask startSocketClient() {
+//        Logger.d(TAG, "Was exception after start client socket");
+        return new SocketClientThread().execute("192.168.1.34", Constants.SOCKET_PORT);
     }
 }

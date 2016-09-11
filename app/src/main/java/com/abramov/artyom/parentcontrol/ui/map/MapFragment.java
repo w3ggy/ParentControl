@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.abramov.artyom.parentcontrol.R;
+import com.abramov.artyom.parentcontrol.domain.Location;
 import com.abramov.artyom.parentcontrol.services.LocationService;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -18,12 +19,18 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-/**
- * Created by Artyom on 11.07.2016.
- */
+import java.util.LinkedList;
+import java.util.List;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
+import rx.Subscription;
+
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private List<Subscription> mSubscribes = new LinkedList<>();
+    private Realm mRealm;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,6 +50,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         super.onStart();
 
         startLocationService();
+        subscribeToRealm();
     }
 
     @Override
@@ -55,12 +63,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         super.onStop();
 
         stopLocationService();
+        unsubscribeFromRealm();
     }
 
     @Override
     public void onPause() {
         super.onPause();
     }
+
+
 
     @Override
     public void onMapReady(GoogleMap map) {
@@ -74,7 +85,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
         }
 
-        map.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+
     }
 
     private void startLocationService() {
@@ -86,6 +97,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void stopLocationService() {
         Intent serviceIntent = new Intent(getContext(), LocationService.class);
         getContext().stopService(serviceIntent);
+    }
+
+    private void subscribeToRealm() {
+        mRealm = Realm.getDefaultInstance();
+
+        mSubscribes.add(mRealm.where(Location.class)
+                .findAll()
+                .asObservable()
+                .subscribe(this::updateMapMarkers));
+    }
+
+    private void unsubscribeFromRealm() {
+        for (Subscription subscription : mSubscribes) {
+            subscription.unsubscribe();
+            mSubscribes.remove(subscription);
+        }
+        mRealm.close();
+    }
+
+    private void updateMapMarkers(RealmResults<Location> locations) {
+        for (Location location : locations) {
+            mMap.clear();
+            mMap.addMarker(new MarkerOptions().position(new LatLng(
+                    location.getLatitude(),
+                    location.getLongitude()))
+                    .title(location.getTitle()));
+        }
     }
 
 }

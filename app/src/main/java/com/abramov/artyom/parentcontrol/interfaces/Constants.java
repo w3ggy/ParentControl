@@ -5,8 +5,6 @@ package com.abramov.artyom.parentcontrol.interfaces;
  */
 public interface Constants {
     boolean isLogging = true;
-    int SOCKET_PORT = 8080;
+    String SOCKET_PORT = "8080";
     int ITEM_MAP = 0;
-
-
 }
