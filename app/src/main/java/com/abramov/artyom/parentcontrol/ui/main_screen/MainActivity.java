@@ -3,6 +3,8 @@ package com.abramov.artyom.parentcontrol.ui.main_screen;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -29,7 +31,8 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements ScreenUtils {
+public class MainActivity extends AppCompatActivity
+        implements ScreenUtils, NavigationView.OnNavigationItemSelectedListener {
 
     @BindView(R.id.main_toolbar)
     Toolbar mToolbar;
@@ -37,8 +40,8 @@ public class MainActivity extends AppCompatActivity implements ScreenUtils {
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
 
-    @BindView(R.id.drawer_menu)
-    ListView mDrawerListView;
+    @BindView(R.id.drawer_navigation)
+    NavigationView mNavigationView;
 
     private Fragment mCurrentFragment;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -54,17 +57,7 @@ public class MainActivity extends AppCompatActivity implements ScreenUtils {
         ((MyApplication) getApplication()).getInjector().inject(this);
 
         setSupportActionBar(mToolbar);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.drawer_list_item, new String[]{"first", "second", "third"});
-
-        mDrawerListView.setAdapter(adapter);
-
-        mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                selectItem(position);
-            }
-        });
+        mNavigationView.setNavigationItemSelectedListener(this);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, null,
                 R.string.nav_drawer_open, R.string.nav_drawer_close) {
@@ -81,11 +74,17 @@ public class MainActivity extends AppCompatActivity implements ScreenUtils {
         };
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+    }
 
-        selectItem(0);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.nav_drawer_menu, menu);
+        return true;
     }
 
     @Override
@@ -109,33 +108,16 @@ public class MainActivity extends AppCompatActivity implements ScreenUtils {
         return super.onOptionsItemSelected(item);
     }
 
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerListView);
-//        menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
-
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    private void selectItem(int position) {
-        mCurrentFragment = getOrCreateFragment(position);
-        changeFragment(mCurrentFragment);
-        changeTitle(position);
-        mDrawerListView.setItemChecked(position, true);
-//        setTitle(mPlanetTitles[position]);
-        mDrawerLayout.closeDrawer(mDrawerListView);
-    }
-
-    private Fragment getOrCreateFragment(int position) {
+    private void changeFragment(int position) {
         Fragment fragment;
         switch (position) {
             case Constants.ITEM_MAP:
-                fragment = getSupportFragmentManager().findFragmentByTag(MapFragment.class.getName());
-                return fragment == null ? new MapFragment() : fragment;
+
+                break;
             default:
                 fragment = getSupportFragmentManager().findFragmentByTag(MapFragment.class.getName());
-                return fragment == null ? new MapFragment() : fragment;
+                changeFragment(fragment == null ? new MapFragment() : fragment);
+                break;
         }
     }
 
@@ -161,20 +143,36 @@ public class MainActivity extends AppCompatActivity implements ScreenUtils {
 
     }
 
-    private void changeTitle(int position) {
-        switch (position) {
-            case Constants.ITEM_MAP:
-                setTitle(getString(R.string.map_title));
-                break;
-            default:
-                setTitle(getString(R.string.map_title));
-        }
-    }
-
     @Override
     public void setTitle(CharSequence title) {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(title);
         }
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_camera) {
+            mCurrentFragment = getSupportFragmentManager().findFragmentByTag(MapFragment.class.getName());
+            changeFragment(mCurrentFragment == null ? new MapFragment() : mCurrentFragment);
+            setTitle(getString(R.string.map_title));
+        } else if (id == R.id.nav_gallery) {
+
+        } else if (id == R.id.nav_slideshow) {
+
+        } else if (id == R.id.nav_manage) {
+
+        } else if (id == R.id.nav_share) {
+
+        } else if (id == R.id.nav_send) {
+
+        }
+
+        mDrawerLayout.closeDrawer(GravityCompat.START);
+        return true;
     }
 }

@@ -14,4 +14,10 @@
     <string name="welcome_phone_description">Необходимо для отслеживания звонков с устройства</string>
     <string name="welcome_sms_title">Отслеживание sms</string>
     <string name="welcome_sms_description">Необходимо для отслеживания sms с устройства</string>
+    <string name="title_activity_asdasdasdasd">asdasdasdasd</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
 </resources>
