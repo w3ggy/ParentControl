@@ -3,6 +3,15 @@
     <string name="nav_drawer.open">Open drawer</string>
     <string name="nav_drawer.close">Close drawer</string>
 
-    <!--    Map fragment-->
+    <!--    Map fragment    -->
     <string name="map.title">Карта</string>
+
+
+    <!--    Welcome screen  -->
+    <string name="welcome_map_description">С помощью этого приложения Вы можете отслеживать местоположение ребенка, где бы он не находился, но для этого необходимо разрешить приложению доступ к местоположению</string>
+    <string name="welcome_map_title">Отслеживание пермещений</string>
+    <string name="welcome_phone_title">Отслеживание звонков</string>
+    <string name="welcome_phone_description">Необходимо для отслеживания звонков с устройства</string>
+    <string name="welcome_sms_title">Отслеживание sms</string>
+    <string name="welcome_sms_description">Необходимо для отслеживания sms с устройства</string>
 </resources>
