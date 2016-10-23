@@ -7,8 +7,8 @@ import android.support.multidex.MultiDex;
 import com.abramov.artyom.parentcontrol.injection.AppModule;
 import com.abramov.artyom.parentcontrol.injection.DaggerInjector;
 import com.abramov.artyom.parentcontrol.injection.Injector;
-import com.firebase.client.Firebase;
 
+import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
 public class MyApplication extends Application {
@@ -19,12 +19,16 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        mRealmConfig = new RealmConfiguration.Builder(this).build();
+        mRealmConfig = new RealmConfiguration
+                .Builder(this)
+                .deleteRealmIfMigrationNeeded()
+                .build();
+        Realm.setDefaultConfiguration(mRealmConfig);
+
         mInjector = DaggerInjector.builder()
                 .appModule(new AppModule(getApplicationContext()))
 //                .netModule(new NetModule("https://api.github.com"))
                 .build();
-        Firebase.setAndroidContext(this);
     }
 
     public Injector getInjector() {

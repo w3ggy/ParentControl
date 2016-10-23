@@ -31,7 +31,7 @@ android {
 
     dexOptions {
         incremental true
-        javaMaxHeapSize "2048M"
+        javaMaxHeapSize "1024M"
     }
 }
 
@@ -63,7 +63,5 @@ dependencies {
 
     //MultiDex
     compile 'com.android.support:multidex:1.0.1'
-
-    compile 'com.firebase:firebase-client-android:2.5.2'
 
 }

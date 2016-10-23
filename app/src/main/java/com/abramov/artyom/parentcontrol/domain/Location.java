@@ -10,6 +10,9 @@ public class Location extends RealmObject{
     private double mLatitude;
     private double mLongitude;
 
+    public Location() {
+    }
+
     public Location(String title, String deviceId, double latitude, double longitude) {
         mTitle = title;
         mDeviceId = deviceId;

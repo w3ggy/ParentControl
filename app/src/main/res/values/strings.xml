@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Абвгд</string>
+    <string name="app_name">Parent control</string>
     <string name="nav_drawer.open">Open drawer</string>
     <string name="nav_drawer.close">Close drawer</string>
 
