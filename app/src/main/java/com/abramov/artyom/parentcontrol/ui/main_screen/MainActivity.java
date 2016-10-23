@@ -1,9 +1,7 @@
 package com.abramov.artyom.parentcontrol.ui.main_screen;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,9 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import com.abramov.artyom.parentcontrol.MyApplication;
 import com.abramov.artyom.parentcontrol.R;
@@ -52,7 +47,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.navigation_drawer_layout);
+        setContentView(R.layout.nav_drawer_layout);
         ButterKnife.bind(this);
         ((MyApplication) getApplication()).getInjector().inject(this);
 
