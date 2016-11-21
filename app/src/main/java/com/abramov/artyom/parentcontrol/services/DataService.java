@@ -71,7 +71,6 @@ public class DataService extends IntentService {
         }
 
         return sms;
-
     }
 
     public List<Call> getCalls() {

@@ -4,6 +4,8 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
+import io.realm.RealmResults;
+import rx.Observable;
 
 public class BaseModel {
     private Realm mRealmInstance;
@@ -18,6 +20,14 @@ public class BaseModel {
         mRealmInstance.commitTransaction();
 
         return items;
+    }
+
+    public <E extends RealmObject> Observable<List<E>> getItemsObservable(Class<E> clazz) {
+        return mRealmInstance.where(clazz)
+                .findAll()
+                .asObservable()
+                .filter(RealmResults::isLoaded)
+                .map(items -> mRealmInstance.copyFromRealm(items));
     }
 
     public <E extends RealmObject> void saveItems(List<E> items) {

@@ -7,6 +7,9 @@ public class Call extends RealmObject {
     private String mNumber;
     private String mDuration;
 
+    public Call() {
+    }
+
     public Call(String name, String number, String duration) {
         mName = name;
         mNumber = number;

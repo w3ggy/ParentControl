@@ -6,6 +6,10 @@ public class Sms extends RealmObject {
     private String mAuthor;
     private String mMessage;
 
+    public Sms() {
+
+    }
+
     public Sms(String mAuthor, String mMessage) {
         this.mAuthor = mAuthor;
         this.mMessage = mMessage;
