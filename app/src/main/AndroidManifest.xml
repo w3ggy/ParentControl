@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
 
     <application
         android:name=".MyApplication"
@@ -37,6 +38,8 @@
         </activity>
 
         <service android:name=".services.LocationService" />
+
+        <service android:name=".services.DataService" />
 
     </application>
 

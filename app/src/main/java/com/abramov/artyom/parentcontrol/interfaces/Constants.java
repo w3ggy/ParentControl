@@ -7,4 +7,7 @@ public interface Constants {
     boolean isLogging = true;
     String SOCKET_PORT = "8080";
     int ITEM_MAP = 0;
+
+    String ACTION_SMS = "action_sms";
+    String ACTION_CALLS = "action_calls";
 }

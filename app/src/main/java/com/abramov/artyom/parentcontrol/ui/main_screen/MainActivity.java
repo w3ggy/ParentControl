@@ -73,12 +73,13 @@ public class MainActivity extends AppCompatActivity
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+
+        changeFragment(new MapFragment());
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.nav_drawer_menu, menu);
+//        getMenuInflater().inflate(R.menu.nav_drawer_menu, menu);
         return true;
     }
 
@@ -101,19 +102,6 @@ public class MainActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void changeFragment(int position) {
-        Fragment fragment;
-        switch (position) {
-            case Constants.ITEM_MAP:
-
-                break;
-            default:
-                fragment = getSupportFragmentManager().findFragmentByTag(MapFragment.class.getName());
-                changeFragment(fragment == null ? new MapFragment() : fragment);
-                break;
-        }
     }
 
     private void changeFragment(Fragment fragment) {
