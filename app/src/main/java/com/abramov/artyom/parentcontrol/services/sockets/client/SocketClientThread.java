@@ -1,6 +1,7 @@
 package com.abramov.artyom.parentcontrol.services.sockets.client;
 
 import android.os.AsyncTask;
+import android.text.TextUtils;
 
 import com.abramov.artyom.parentcontrol.domain.Loc;
 import com.abramov.artyom.parentcontrol.model.BaseModel;
@@ -16,7 +17,7 @@ import java.net.UnknownHostException;
 public class SocketClientThread extends AsyncTask<String, Void, Void> {
     private static final String TAG = SocketClientThread.class.getSimpleName();
     private Socket mSocket;
-    private String mResponse;
+    private String mResponse = "";
     private Gson mGson;
     private BaseModel mBaseModel;
 
@@ -41,6 +42,7 @@ public class SocketClientThread extends AsyncTask<String, Void, Void> {
             byte[] buffer = new byte[1024];
 
             int bytesRead;
+            String tmp;
             InputStream inputStream = mSocket.getInputStream();
             /*
              * notice:
@@ -48,7 +50,11 @@ public class SocketClientThread extends AsyncTask<String, Void, Void> {
              */
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 byteArrayOutputStream.write(buffer, 0, bytesRead);
-                mResponse += byteArrayOutputStream.toString("UTF-8");
+                tmp = byteArrayOutputStream.toString("UTF-8");
+
+                if (!TextUtils.isEmpty(tmp)) {
+                    mResponse += tmp;
+                }
             }
 
             Logger.d(TAG, "Reply was received");
@@ -67,8 +73,11 @@ public class SocketClientThread extends AsyncTask<String, Void, Void> {
             }
         }
 
-        Loc response = mGson.fromJson(mResponse, Loc.class);
+        if (TextUtils.isEmpty(mResponse)) {
+            return null;
+        }
 
+        Loc response = mGson.fromJson(mResponse, Loc.class);
         mBaseModel.saveItem(response);
 
         Logger.d(TAG, "Response is : " + response);
