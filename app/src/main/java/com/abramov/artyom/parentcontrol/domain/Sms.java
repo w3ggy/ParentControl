@@ -1,8 +1,11 @@
 package com.abramov.artyom.parentcontrol.domain;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class Sms extends RealmObject {
+    @PrimaryKey
+    private String mId;
     private String mAuthor;
     private String mMessage;
 
@@ -10,9 +13,10 @@ public class Sms extends RealmObject {
 
     }
 
-    public Sms(String mAuthor, String mMessage) {
-        this.mAuthor = mAuthor;
-        this.mMessage = mMessage;
+    public Sms(String id, String author, String message) {
+        mId = id;
+        mAuthor = author;
+        mMessage = message;
     }
 
     public String getAuthor() {

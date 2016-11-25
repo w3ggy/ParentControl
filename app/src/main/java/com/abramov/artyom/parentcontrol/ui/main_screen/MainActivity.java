@@ -3,7 +3,6 @@ package com.abramov.artyom.parentcontrol.ui.main_screen;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -24,6 +23,7 @@ import com.abramov.artyom.parentcontrol.interfaces.ScreenUtils;
 import com.abramov.artyom.parentcontrol.services.DataService;
 import com.abramov.artyom.parentcontrol.ui.calls.CallsFragment;
 import com.abramov.artyom.parentcontrol.ui.map.MapFragment;
+import com.abramov.artyom.parentcontrol.ui.sms.SmsFragment;
 import com.abramov.artyom.parentcontrol.ui.welcome_screen.WelcomeActivity;
 
 import javax.inject.Inject;
@@ -146,25 +146,28 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.nav_location) {
             mCurrentFragment = getSupportFragmentManager().findFragmentByTag(MapFragment.class.getName());
-            changeFragment(mCurrentFragment == null ? new MapFragment() : mCurrentFragment);
+            changeFragment(mCurrentFragment == null ? MapFragment.getInstance() : mCurrentFragment);
             setTitle(getString(R.string.map_title));
         } else if (id == R.id.nav_sms) {
+            mCurrentFragment = getSupportFragmentManager().findFragmentByTag(SmsFragment.class.getName());
+            changeFragment(mCurrentFragment == null ? SmsFragment.getInstance() : mCurrentFragment);
+            setTitle(getString(R.string.sms_title));
+        } else if (id == R.id.nav_calls) {
+            mCurrentFragment = getSupportFragmentManager().findFragmentByTag(CallsFragment.class.getName());
+            changeFragment(mCurrentFragment == null ? CallsFragment.getInstance() : mCurrentFragment);
+            setTitle(getString(R.string.calls_title));
+        } else if (id == R.id.nav_share) {
             Intent intent = new Intent(this, DataService.class);
             intent.setAction(Constants.ACTION_CALLS);
             startService(intent);
-        } else if (id == R.id.nav_calls) {
-            mCurrentFragment = getSupportFragmentManager().findFragmentByTag(CallsFragment.class.getName());
-            changeFragment(mCurrentFragment == null ? new CallsFragment() : mCurrentFragment);
-            setTitle(getString(R.string.calls_title));
-        } else if (id == R.id.nav_share) {
-
         } else if (id == R.id.nav_send) {
-
+            Intent intent = new Intent(this, DataService.class);
+            intent.setAction(Constants.ACTION_SMS);
+            startService(intent);
         }
 
         mDrawerLayout.closeDrawer(GravityCompat.START);

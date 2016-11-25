@@ -69,9 +69,10 @@ public class DataService extends IntentService {
         Cursor cur = getContentResolver().query(uriSMSURI, null, null, null, null);
 
         while (cur.moveToNext()) {
+            String id = cur.getString(cur.getColumnIndexOrThrow("_id"));
             String address = cur.getString(cur.getColumnIndex("address"));
             String body = cur.getString(cur.getColumnIndexOrThrow("body"));
-            sms.add(new Sms(address, body));
+            sms.add(new Sms(id, address, body));
         }
 
         return sms;

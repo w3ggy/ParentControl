@@ -1,4 +1,4 @@
-package com.abramov.artyom.parentcontrol.ui.calls;
+package com.abramov.artyom.parentcontrol.ui.sms;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,24 +9,24 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.abramov.artyom.parentcontrol.R;
-import com.abramov.artyom.parentcontrol.domain.Call;
+import com.abramov.artyom.parentcontrol.domain.Sms;
 import com.abramov.artyom.parentcontrol.ui.BaseFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class CallsFragment extends BaseFragment {
-    @BindView(R.id.calls_list)
+public class SmsFragment extends BaseFragment {
+    @BindView(R.id.sms_list)
     RecyclerView mRecyclerView;
 
-    public static CallsFragment getInstance() {
-        return new CallsFragment();
+    public static SmsFragment getInstance() {
+        return new SmsFragment();
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_calls, container, false);
+        View view = inflater.inflate(R.layout.fragment_sms, container, false);
         ButterKnife.bind(this, view);
         return view;
     }
@@ -35,9 +35,9 @@ public class CallsFragment extends BaseFragment {
     public void onStart() {
         super.onStart();
 
-        addSubscription(getModel().getItemsObservable(Call.class).subscribe(calls -> {
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            mRecyclerView.setAdapter(new CallsAdapter(calls));
+        addSubscription(getModel().getItemsObservable(Sms.class).subscribe(sms -> {
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+            mRecyclerView.setAdapter(new SmsAdapter(sms));
         }));
     }
 

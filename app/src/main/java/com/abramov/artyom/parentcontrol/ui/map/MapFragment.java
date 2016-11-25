@@ -32,6 +32,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private List<Subscription> mSubscribes = new LinkedList<>();
     private Realm mRealm;
 
+    public static MapFragment getInstance() {
+        return new MapFragment();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

@@ -59,9 +59,11 @@ public class CallsAdapter extends RecyclerView.Adapter<CallsAdapter.CallViewHold
         }
 
         void init(Call call) {
-            mName.setText(call.getName());
-            mDate.setText(new SimpleDateFormat("d MMM yyyy HH:mm:ss", Locale.getDefault()).format(call.getDate()));
+            String name = call.getName();
+            mName.setText(TextUtils.isEmpty(name) ? "Unnamed" : name);
+            mDate.setText(new SimpleDateFormat("d MMM yyyy HH:mm", Locale.getDefault()).format(call.getDate()));
             mNumber.setText(call.getNumber());
+            mDuration.setText(itemView.getResources().getString(R.string.duration, call.getDuration()));
         }
     }
 }
