@@ -8,17 +8,19 @@ import android.os.IBinder;
 import android.provider.CallLog;
 import android.support.annotation.Nullable;
 
+import com.abramov.artyom.parentcontrol.MyApplication;
 import com.abramov.artyom.parentcontrol.domain.Call;
 import com.abramov.artyom.parentcontrol.domain.Sms;
 import com.abramov.artyom.parentcontrol.interfaces.Constants;
 import com.abramov.artyom.parentcontrol.model.BaseModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class DataService extends IntentService {
-    private BaseModel mBaseModel;
+import javax.inject.Inject;
 
+public class DataService extends IntentService {
     public DataService() {
         super(DataService.class.getName());
     }
@@ -27,16 +29,18 @@ public class DataService extends IntentService {
         super(name);
     }
 
+    @Inject
+    BaseModel mBaseModel;
+
     @Override
     public void onCreate() {
         super.onCreate();
-        mBaseModel = new BaseModel();
+        ((MyApplication) getApplication()).getInjector().inject(this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mBaseModel.destroy();
         mBaseModel = null;
     }
 
@@ -81,8 +85,12 @@ public class DataService extends IntentService {
             calls.add(new Call(
                     c.getString(c.getColumnIndex(CallLog.Calls.CACHED_NAME)),
                     c.getString(c.getColumnIndex(CallLog.Calls.NUMBER)),
-                    c.getString(c.getColumnIndex(CallLog.Calls.DURATION))));
+                    c.getString(c.getColumnIndex(CallLog.Calls.DURATION)),
+                    Long.valueOf(c.getString(c.getColumnIndex(CallLog.Calls.DATE))),
+                    c.getString(c.getColumnIndex(CallLog.Calls._ID))));
         }
+
+        Collections.reverse(calls);
 
         return calls;
     }

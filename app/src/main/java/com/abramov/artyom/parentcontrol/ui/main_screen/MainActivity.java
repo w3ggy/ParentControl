@@ -1,7 +1,9 @@
 package com.abramov.artyom.parentcontrol.ui.main_screen;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,7 +21,10 @@ import com.abramov.artyom.parentcontrol.MyApplication;
 import com.abramov.artyom.parentcontrol.R;
 import com.abramov.artyom.parentcontrol.interfaces.Constants;
 import com.abramov.artyom.parentcontrol.interfaces.ScreenUtils;
+import com.abramov.artyom.parentcontrol.services.DataService;
+import com.abramov.artyom.parentcontrol.ui.calls.CallsFragment;
 import com.abramov.artyom.parentcontrol.ui.map.MapFragment;
+import com.abramov.artyom.parentcontrol.ui.welcome_screen.WelcomeActivity;
 
 import javax.inject.Inject;
 
@@ -50,6 +55,13 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.nav_drawer_layout);
         ButterKnife.bind(this);
         ((MyApplication) getApplication()).getInjector().inject(this);
+
+        if (!mSharedPreferences.getBoolean(Constants.ALREADY_LAUNCHED, false)) {
+            overridePendingTransition(0, 0);
+            Intent startIntent = new Intent(this, WelcomeActivity.class);
+            startActivity(startIntent);
+            finish();
+        }
 
         setSupportActionBar(mToolbar);
         mNavigationView.setNavigationItemSelectedListener(this);
@@ -123,7 +135,6 @@ public class MainActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
-
     }
 
     @Override
@@ -133,22 +144,23 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_location) {
             mCurrentFragment = getSupportFragmentManager().findFragmentByTag(MapFragment.class.getName());
             changeFragment(mCurrentFragment == null ? new MapFragment() : mCurrentFragment);
             setTitle(getString(R.string.map_title));
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
+        } else if (id == R.id.nav_sms) {
+            Intent intent = new Intent(this, DataService.class);
+            intent.setAction(Constants.ACTION_CALLS);
+            startService(intent);
+        } else if (id == R.id.nav_calls) {
+            mCurrentFragment = getSupportFragmentManager().findFragmentByTag(CallsFragment.class.getName());
+            changeFragment(mCurrentFragment == null ? new CallsFragment() : mCurrentFragment);
+            setTitle(getString(R.string.calls_title));
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {

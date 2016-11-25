@@ -5,6 +5,8 @@
 
     <!--    Map fragment    -->
     <string name="map.title">Карта</string>
+    <string name="sms_title">Смс</string>
+    <string name="calls_title">Звонки</string>
 
 
     <!--    Welcome screen  -->

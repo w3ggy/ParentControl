@@ -3,9 +3,11 @@ package com.abramov.artyom.parentcontrol.ui.welcome_screen;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 
 import com.abramov.artyom.parentcontrol.R;
+import com.abramov.artyom.parentcontrol.interfaces.Constants;
 import com.abramov.artyom.parentcontrol.ui.main_screen.MainActivity;
 
 import agency.tango.materialintroscreen.MaterialIntroActivity;
@@ -65,6 +67,10 @@ public class WelcomeActivity extends MaterialIntroActivity {
 
     @Override
     public void onFinish() {
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .edit()
+                .putBoolean(Constants.ALREADY_LAUNCHED, true)
+                .apply();
         changeScreen();
     }
 }

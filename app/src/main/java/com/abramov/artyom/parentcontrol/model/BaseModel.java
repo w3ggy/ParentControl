@@ -1,5 +1,6 @@
 package com.abramov.artyom.parentcontrol.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
@@ -8,26 +9,50 @@ import io.realm.RealmResults;
 import rx.Observable;
 
 public class BaseModel {
-    private Realm mRealmInstance;
 
     public BaseModel() {
-        mRealmInstance = Realm.getDefaultInstance();
     }
 
     public <E extends RealmObject> List<E> getItems(Class<E> clazz) {
-        mRealmInstance.beginTransaction();
-        List<E> items = mRealmInstance.copyFromRealm(mRealmInstance.where(clazz).findAll());
-        mRealmInstance.commitTransaction();
+        List<E> items = new ArrayList<E>();
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            items = realm.copyFromRealm(realm.where(clazz).findAll());
+            realm.commitTransaction();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (realm != null && !realm.isClosed()) {
+                try {
+                    realm.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
         return items;
     }
 
     public <E extends RealmObject> Observable<List<E>> getItemsObservable(Class<E> clazz) {
-        return mRealmInstance.where(clazz)
+        Realm realm = Realm.getDefaultInstance();
+
+        return realm.where(clazz)
                 .findAll()
                 .asObservable()
                 .filter(RealmResults::isLoaded)
-                .map(items -> mRealmInstance.copyFromRealm(items));
+                .doOnUnsubscribe(() -> {
+                    try {
+                        if (!realm.isClosed()) {
+                            realm.close();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                })
+                .map(realm::copyFromRealm);
     }
 
     public <E extends RealmObject> void saveItems(List<E> items) {
@@ -35,18 +60,22 @@ public class BaseModel {
             return;
         }
 
-        mRealmInstance.beginTransaction();
-        mRealmInstance.copyToRealm(items);
-        mRealmInstance.commitTransaction();
-    }
-
-    public void destroy() {
+        Realm realm = null;
         try {
-            mRealmInstance.close();
-            mRealmInstance = null;
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            realm.copyToRealmOrUpdate(items);
+            realm.commitTransaction();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (realm != null && !realm.isClosed()) {
+                try {
+                    realm.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
-
 }

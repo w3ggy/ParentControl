@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:columnCount="2">
+    <TextView
+        android:id="@+id/call_name"
+        android:padding="10dp"/>
+
+    <TextView
+        android:id="@+id/call_number"
+        android:padding="10dp"/>
+
+    <TextView
+        android:id="@+id/call_date"
+        android:padding="10dp"/>
+
+    <TextView
+        android:id="@+id/call_duration"
+        android:padding="10dp"/>
+
+</GridLayout>

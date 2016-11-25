@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.abramov.artyom.parentcontrol.model.BaseModel;
 import com.abramov.artyom.parentcontrol.net.NetService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -29,6 +30,12 @@ public class AppModule {
     @Singleton
     SharedPreferences provideSharedPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(mContext);
+    }
+
+    @Provides
+    @Singleton
+    BaseModel provideBaseModel() {
+        return new BaseModel();
     }
 
     @Provides

@@ -31,11 +31,11 @@ public class LocationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent.getBooleanExtra(EXTRA_IS_SERVER, true)) {
+        /*if (intent.getBooleanExtra(EXTRA_IS_SERVER, true)) {
             mCurrentSocket = startSocketServer();
         } else {
             mCurrentSocket = startSocketClient();
-        }
+        }*/
 
         if (mCurrentSocket == null) {
             Logger.d(TAG, "Location service wasn't start");
@@ -66,7 +66,7 @@ public class LocationService extends Service {
         }*/
     }
 
-    private AsyncTask startSocketServer() {
+    /*private AsyncTask startSocketServer() {
 //        Logger.d(TAG, "Was exception after start server socket");
         return new SocketServerThread(this);
     }
@@ -74,5 +74,5 @@ public class LocationService extends Service {
     private AsyncTask startSocketClient() {
 //        Logger.d(TAG, "Was exception after start client socket");
         return new SocketClientThread().execute("192.168.1.34", Constants.SOCKET_PORT);
-    }
+    }*/
 }
