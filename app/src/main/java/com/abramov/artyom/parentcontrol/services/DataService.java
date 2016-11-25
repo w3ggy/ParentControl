@@ -6,10 +6,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.CallLog;
 import android.support.annotation.Nullable;
@@ -30,8 +28,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class DataService extends IntentService {
-    private static final int LOCATION_REFRESH_TIME = 10;
-    private static final int LOCATION_REFRESH_DISTANCE = 1;
 
     public DataService() {
         super(DataService.class.getName());
@@ -129,33 +125,5 @@ public class DataService extends IntentService {
                 DeviceUtils.getDeviceId(DataService.this),
                 location.getLatitude(),
                 location.getLongitude()));
-        /*mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
-                LOCATION_REFRESH_DISTANCE, mLocationListener);*/
     }
-
-    /*private final LocationListener mLocationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(final Location location) {
-            *//*mBaseModel.saveItem(new Loc(
-                    DeviceUtils.getDeviceId(DataService.this),
-                    "Artyom-test",
-                    location.getLatitude(),
-                    location.getLongitude()));*//*
-        }
-
-        @Override
-        public void onStatusChanged(String s, int i, Bundle bundle) {
-
-        }
-
-        @Override
-        public void onProviderEnabled(String s) {
-
-        }
-
-        @Override
-        public void onProviderDisabled(String s) {
-
-        }
-    };*/
 }

@@ -39,6 +39,7 @@ public class SocketServerThread extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... voids) {
         try {
             mServerSocket = new ServerSocket(Integer.parseInt(SOCKET_PORT));
+            Logger.d(TAG, "Socket has been created!");
         } catch (IOException e) {
             e.printStackTrace();
             Logger.d(TAG, "Cant create Server socket on the " + SOCKET_PORT);
@@ -61,6 +62,7 @@ public class SocketServerThread extends AsyncTask<Void, Void, Void> {
         try {
             socket = mServerSocket.accept();
             readDataFromInputSocket(socket);
+            Logger.d(TAG, "Data accepted by server");
         } catch (IOException e) {
             e.printStackTrace();
             Logger.d(TAG, "Cannot accept socket");
@@ -72,6 +74,8 @@ public class SocketServerThread extends AsyncTask<Void, Void, Void> {
             PrintStream printStream = new PrintStream(outputStream);
             printStream.print(mGson.toJson(loc));
             printStream.close();
+            Logger.d(TAG, "Reply was sent");
+
         } catch (IOException e) {
             e.printStackTrace();
             Logger.d(TAG, "Cannot reply to the client");

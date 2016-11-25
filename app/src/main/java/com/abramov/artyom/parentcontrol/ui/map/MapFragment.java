@@ -1,7 +1,6 @@
 package com.abramov.artyom.parentcontrol.ui.map;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -12,7 +11,6 @@ import android.view.ViewGroup;
 
 import com.abramov.artyom.parentcontrol.R;
 import com.abramov.artyom.parentcontrol.domain.Loc;
-import com.abramov.artyom.parentcontrol.services.LocationService;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -107,6 +105,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void updateMapMarkers(RealmResults<Loc> locs) {
+        if (mMap == null) {
+            return;
+        }
+
         for (Loc loc : locs) {
             mMap.clear();
             mMap.addMarker(new MarkerOptions().position(new LatLng(

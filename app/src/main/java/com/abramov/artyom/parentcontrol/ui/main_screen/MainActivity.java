@@ -21,6 +21,7 @@ import com.abramov.artyom.parentcontrol.R;
 import com.abramov.artyom.parentcontrol.interfaces.Constants;
 import com.abramov.artyom.parentcontrol.interfaces.ScreenUtils;
 import com.abramov.artyom.parentcontrol.services.DataService;
+import com.abramov.artyom.parentcontrol.services.LocationService;
 import com.abramov.artyom.parentcontrol.ui.calls.CallsFragment;
 import com.abramov.artyom.parentcontrol.ui.map.MapFragment;
 import com.abramov.artyom.parentcontrol.ui.sms.SmsFragment;
@@ -87,6 +88,8 @@ public class MainActivity extends AppCompatActivity
         getSupportActionBar().setHomeButtonEnabled(true);
 
         changeFragment(new MapFragment());
+
+        startService(new Intent(this, LocationService.class));
     }
 
     @Override

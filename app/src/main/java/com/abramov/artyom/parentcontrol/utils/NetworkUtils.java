@@ -1,13 +1,16 @@
 package com.abramov.artyom.parentcontrol.utils;
 
+import android.content.Context;
+import android.net.DhcpInfo;
+import android.net.wifi.WifiManager;
+import android.text.format.Formatter;
+
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 
-/**
- * Created by Artyom on 11.09.2016.
- */
+import static android.content.Context.WIFI_SERVICE;
 
 public class NetworkUtils {
     public static String getIpAddress() {
@@ -24,8 +27,7 @@ public class NetworkUtils {
                     InetAddress inetAddress = enumInetAddress.nextElement();
 
                     if (inetAddress.isSiteLocalAddress()) {
-                        ip += "SiteLocalAddress: "
-                                + inetAddress.getHostAddress() + "\n";
+                        ip = inetAddress.getHostAddress();
                     }
 
                 }
@@ -38,5 +40,12 @@ public class NetworkUtils {
         }
 
         return ip;
+    }
+
+    public static String getIpAddress(Context context) {
+        final WifiManager manager = (WifiManager) context.getSystemService(WIFI_SERVICE);
+        final DhcpInfo dhcp = manager.getDhcpInfo();
+        final String address = Formatter.formatIpAddress(dhcp.gateway);
+        return address;
     }
 }

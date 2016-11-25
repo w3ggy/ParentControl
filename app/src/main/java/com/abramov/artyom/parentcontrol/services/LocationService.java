@@ -6,20 +6,14 @@ import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import com.abramov.artyom.parentcontrol.R;
 import com.abramov.artyom.parentcontrol.interfaces.Constants;
 import com.abramov.artyom.parentcontrol.services.sockets.client.SocketClientThread;
 import com.abramov.artyom.parentcontrol.services.sockets.server.SocketServerThread;
 import com.abramov.artyom.parentcontrol.utils.Logger;
 import com.abramov.artyom.parentcontrol.utils.NetworkUtils;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Enumeration;
-
 public class LocationService extends Service {
-    public static final String EXTRA_IS_SERVER = "extra_is_server";
     private AsyncTask mCurrentSocket;
     private static final String TAG = LocationService.class.getSimpleName();
 
@@ -31,11 +25,11 @@ public class LocationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        /*if (intent.getBooleanExtra(EXTRA_IS_SERVER, true)) {
-            mCurrentSocket = startSocketServer();
-        } else {
+        if (getResources().getBoolean(R.bool.isTablet)) {
             mCurrentSocket = startSocketClient();
-        }*/
+        } else {
+            mCurrentSocket = startSocketServer();
+        }
 
         if (mCurrentSocket == null) {
             Logger.d(TAG, "Loc service wasn't start");
@@ -66,13 +60,13 @@ public class LocationService extends Service {
         }*/
     }
 
-    /*private AsyncTask startSocketServer() {
+    private AsyncTask startSocketServer() {
 //        Logger.d(TAG, "Was exception after start server socket");
-        return new SocketServerThread(this);
+        return new SocketServerThread(this).execute();
     }
 
     private AsyncTask startSocketClient() {
 //        Logger.d(TAG, "Was exception after start client socket");
-        return new SocketClientThread().execute("192.168.1.34", Constants.SOCKET_PORT);
-    }*/
+        return new SocketClientThread().execute(NetworkUtils.getIpAddress(this), Constants.SOCKET_PORT);
+    }
 }
