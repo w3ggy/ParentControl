@@ -164,9 +164,13 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, DataService.class);
             intent.setAction(Constants.ACTION_CALLS);
             startService(intent);
+
+            intent = new Intent(this, DataService.class);
+            intent.setAction(Constants.ACTION_SMS);
+            startService(intent);
         } else if (id == R.id.nav_send) {
             Intent intent = new Intent(this, DataService.class);
-            intent.setAction(Constants.ACTION_SMS);
+            intent.setAction(Constants.ACTION_LOCATION);
             startService(intent);
         }
 

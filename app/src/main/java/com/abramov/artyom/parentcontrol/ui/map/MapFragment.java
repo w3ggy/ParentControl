@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.abramov.artyom.parentcontrol.R;
-import com.abramov.artyom.parentcontrol.domain.Location;
+import com.abramov.artyom.parentcontrol.domain.Loc;
 import com.abramov.artyom.parentcontrol.services.LocationService;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -53,7 +53,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onStart() {
         super.onStart();
 
-        startLocationService();
         subscribeToRealm();
     }
 
@@ -66,7 +65,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onStop() {
         super.onStop();
 
-        stopLocationService();
         unsubscribeFromRealm();
     }
 
@@ -91,21 +89,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private void startLocationService() {
-        Intent serviceIntent = new Intent(getContext(), LocationService.class);
-        serviceIntent.putExtra(LocationService.EXTRA_IS_SERVER, false);
-        getContext().startService(serviceIntent);
-    }
-
-    private void stopLocationService() {
-        Intent serviceIntent = new Intent(getContext(), LocationService.class);
-        getContext().stopService(serviceIntent);
-    }
-
     private void subscribeToRealm() {
         mRealm = Realm.getDefaultInstance();
 
-        mSubscribes.add(mRealm.where(Location.class)
+        mSubscribes.add(mRealm.where(Loc.class)
                 .findAll()
                 .asObservable()
                 .subscribe(this::updateMapMarkers));
@@ -119,13 +106,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mRealm.close();
     }
 
-    private void updateMapMarkers(RealmResults<Location> locations) {
-        for (Location location : locations) {
+    private void updateMapMarkers(RealmResults<Loc> locs) {
+        for (Loc loc : locs) {
             mMap.clear();
             mMap.addMarker(new MarkerOptions().position(new LatLng(
-                    location.getLatitude(),
-                    location.getLongitude()))
-                    .title(location.getTitle()));
+                    loc.getLatitude(),
+                    loc.getLongitude()))
+                    .title(loc.getTitle()));
         }
     }
 

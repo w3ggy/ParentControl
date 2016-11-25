@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
+import android.support.v7.widget.LinearSnapHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +39,8 @@ public class SmsFragment extends BaseFragment {
 
         addSubscription(getModel().getItemsObservable(Sms.class).subscribe(sms -> {
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+            SnapHelper helper = new LinearSnapHelper();
+            helper.attachToRecyclerView(mRecyclerView);
             mRecyclerView.setAdapter(new SmsAdapter(sms));
         }));
     }

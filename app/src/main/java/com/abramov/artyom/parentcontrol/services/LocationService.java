@@ -38,7 +38,7 @@ public class LocationService extends Service {
         }*/
 
         if (mCurrentSocket == null) {
-            Logger.d(TAG, "Location service wasn't start");
+            Logger.d(TAG, "Loc service wasn't start");
             stopSelf(startId);
         }
 

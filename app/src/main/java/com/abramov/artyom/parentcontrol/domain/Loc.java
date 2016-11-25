@@ -3,17 +3,17 @@ package com.abramov.artyom.parentcontrol.domain;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class Location extends RealmObject{
+public class Loc extends RealmObject{
     @PrimaryKey
     private String mDeviceId;
     private String mTitle;
     private double mLatitude;
     private double mLongitude;
 
-    public Location() {
+    public Loc() {
     }
 
-    public Location(String title, String deviceId, double latitude, double longitude) {
+    public Loc(String title, String deviceId, double latitude, double longitude) {
         mTitle = title;
         mDeviceId = deviceId;
         mLatitude = latitude;

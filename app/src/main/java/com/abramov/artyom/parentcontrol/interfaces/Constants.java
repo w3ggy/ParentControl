@@ -12,4 +12,5 @@ public interface Constants {
 
     String ACTION_SMS = "action_sms";
     String ACTION_CALLS = "action_calls";
+    String ACTION_LOCATION = "action_location";
 }

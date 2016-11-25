@@ -2,7 +2,7 @@ package com.abramov.artyom.parentcontrol.services.sockets.client;
 
 import android.os.AsyncTask;
 
-import com.abramov.artyom.parentcontrol.domain.Location;
+import com.abramov.artyom.parentcontrol.domain.Loc;
 import com.abramov.artyom.parentcontrol.utils.Logger;
 import com.google.gson.Gson;
 
@@ -67,9 +67,9 @@ public class SocketClientThread extends AsyncTask<String, Void, Void> {
             }
         }
 
-        Object response = mGson.fromJson(mResponse, Location.class);
+        Object response = mGson.fromJson(mResponse, Loc.class);
 
-        saveData(mGson.fromJson(mResponse, Location.class));
+        saveData(mGson.fromJson(mResponse, Loc.class));
 
         Logger.d(TAG, "Response is : " + response);
 

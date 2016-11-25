@@ -3,7 +3,7 @@ package com.abramov.artyom.parentcontrol.services.sockets.server;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.abramov.artyom.parentcontrol.domain.Location;
+import com.abramov.artyom.parentcontrol.domain.Loc;
 import com.abramov.artyom.parentcontrol.utils.DeviceUtils;
 import com.abramov.artyom.parentcontrol.utils.Logger;
 import com.google.gson.Gson;
@@ -50,7 +50,7 @@ public class SocketServerThread extends AsyncTask<Void, Void, Void> {
     }
 
     private void sendReply() {
-        Location location = new Location("test marker",
+        Loc loc = new Loc("test marker",
                 DeviceUtils.getDeviceId(mContext),
                 54.357971,
                 48.379740);
@@ -70,7 +70,7 @@ public class SocketServerThread extends AsyncTask<Void, Void, Void> {
         try {
             outputStream = socket.getOutputStream();
             PrintStream printStream = new PrintStream(outputStream);
-            printStream.print(mGson.toJson(location));
+            printStream.print(mGson.toJson(loc));
             printStream.close();
         } catch (IOException e) {
             e.printStackTrace();

@@ -78,4 +78,28 @@ public class BaseModel {
             }
         }
     }
+
+    public <E extends RealmObject> void saveItem(E item) {
+        if (item == null) {
+            return;
+        }
+
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            realm.copyToRealmOrUpdate(item);
+            realm.commitTransaction();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (realm != null && !realm.isClosed()) {
+                try {
+                    realm.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }
