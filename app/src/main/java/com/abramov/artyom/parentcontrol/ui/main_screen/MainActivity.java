@@ -104,7 +104,6 @@ public class MainActivity extends AppCompatActivity
 
         mDPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
         mDeviceAdminSample = new ComponentName(this, MainActivity.DeviceAdminSampleReceiver.class);
-
     }
 
     @Override
@@ -223,7 +222,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void checkAdminPermission() {
-        if (getResources().getBoolean(R.bool.isTablet) && !mDPM.isAdminActive(mDeviceAdminSample)) {
+        if (!getResources().getBoolean(R.bool.isTablet) && !mDPM.isAdminActive(mDeviceAdminSample)) {
             Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
             intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mDeviceAdminSample);
             intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
