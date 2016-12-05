@@ -50,8 +50,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onStart() {
         super.onStart();
-
-        subscribeToRealm();
     }
 
     @Override
@@ -84,6 +82,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             map.setMyLocationEnabled(true);
             map.getUiSettings().setMyLocationButtonEnabled(true);
             map.getUiSettings().setRotateGesturesEnabled(true);
+
+            subscribeToRealm();
         }
     }
 
@@ -108,14 +108,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (mMap == null) {
             return;
         }
-
-        for (Loc loc : locs) {
-            mMap.clear();
-            mMap.addMarker(new MarkerOptions().position(new LatLng(
-                    loc.getLatitude(),
-                    loc.getLongitude()))
-                    .title(loc.getTitle()));
-        }
+        Loc loc = locs.get(0);
+        mMap.clear();
+        mMap.addMarker(new MarkerOptions().position(new LatLng(
+                loc.getLatitude(),
+                loc.getLongitude()))
+                .title(loc.getTitle()));
     }
 
 }
