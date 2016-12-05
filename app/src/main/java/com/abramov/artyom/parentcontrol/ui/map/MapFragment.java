@@ -105,7 +105,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void updateMapMarkers(RealmResults<Loc> locs) {
-        if (mMap == null) {
+        if (mMap == null || getResources().getBoolean(R.bool.isTablet)) {
             return;
         }
         Loc loc = locs.get(0);
