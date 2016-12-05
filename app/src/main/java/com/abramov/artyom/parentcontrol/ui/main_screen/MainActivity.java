@@ -1,8 +1,15 @@
 package com.abramov.artyom.parentcontrol.ui.main_screen;
 
+import android.app.admin.DeviceAdminReceiver;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.Settings;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,6 +22,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.abramov.artyom.parentcontrol.MyApplication;
 import com.abramov.artyom.parentcontrol.R;
@@ -34,6 +42,11 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity
         implements ScreenUtils, NavigationView.OnNavigationItemSelectedListener {
+
+    private DevicePolicyManager mDPM;
+    private ComponentName mDeviceAdminSample;
+    private static final int REQUEST_CODE_ENABLE_ADMIN = 1;
+    private final static int REQUEST_DRAW_OVERLAYS = 101;
 
     @BindView(R.id.main_toolbar)
     Toolbar mToolbar;
@@ -88,6 +101,10 @@ public class MainActivity extends AppCompatActivity
         getSupportActionBar().setHomeButtonEnabled(true);
 
         changeFragment(new MapFragment());
+
+        mDPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
+        mDeviceAdminSample = new ComponentName(this, MainActivity.DeviceAdminSampleReceiver.class);
+
     }
 
     @Override
@@ -169,7 +186,7 @@ public class MainActivity extends AppCompatActivity
             changeFragment(mCurrentFragment == null ? CallsFragment.getInstance() : mCurrentFragment);
             setTitle(getString(R.string.calls_title));
         } else if (id == R.id.nav_share) {
-
+            checkAdminPermission();
         } else if (id == R.id.nav_send) {
 
         }
@@ -182,5 +199,67 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(this, DataService.class);
         intent.setAction(Constants.ACTION_ALL_DATA);
         startService(intent);
+    }
+
+    public void checkDrawOverlayPermission() {
+        if (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(this))) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, REQUEST_DRAW_OVERLAYS);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_ENABLE_ADMIN) {
+            if (resultCode == AppCompatActivity.RESULT_OK) {
+                Toast.makeText(this, "Provisioning done.", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Provisioning failed.", Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void checkAdminPermission() {
+        if (getResources().getBoolean(R.bool.isTablet) && !mDPM.isAdminActive(mDeviceAdminSample)) {
+            Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mDeviceAdminSample);
+            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+                    "U r really want to become admin?");
+            startActivityForResult(intent, REQUEST_CODE_ENABLE_ADMIN);
+        }
+    }
+
+    public static class DeviceAdminSampleReceiver extends DeviceAdminReceiver {
+
+        public DeviceAdminSampleReceiver() {
+            super();
+        }
+
+        void showToast(Context context, String msg) {
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onEnabled(Context context, Intent intent) {
+            showToast(context, "onEnabled!");
+        }
+
+        @Override
+        public CharSequence onDisableRequested(Context context, Intent intent) {
+            return "U r really want to disable it?";
+        }
+
+        @Override
+        public void onDisabled(Context context, Intent intent) {
+            showToast(context, "onDisabled!");
+        }
+
+        @Override
+        public void onPasswordChanged(Context context, Intent intent) {
+            showToast(context, "onPasswordChanged");
+        }
     }
 }

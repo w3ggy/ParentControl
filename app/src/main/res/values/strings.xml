@@ -24,4 +24,12 @@
 
     <string name="action_settings">Settings</string>
     <string name="nav_drawer_location">Местоположение</string>
+
+    <string name="test">только сейчас</string>
+    <string name="enter">Перейти</string>
+    <string name="receiver">Device admin receiver!</string>
+    <string name="admin_screen">Admin screen</string>
+    <string name="my_first_system_alert">My first system alert!</string>
+    <string name="description">Short description of the accessibility service purpose or behavior.</string>
+
 </resources>
