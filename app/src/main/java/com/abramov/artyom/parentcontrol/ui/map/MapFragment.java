@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmObject;
 import io.realm.RealmResults;
 import rx.Subscription;
 
@@ -90,10 +91,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void subscribeToRealm() {
         mRealm = Realm.getDefaultInstance();
 
-        mSubscribes.add(mRealm.where(Loc.class)
-                .findAll()
-                .asObservable()
-                .subscribe(this::updateMapMarkers));
+        RealmObject object = mRealm.where(Loc.class)
+                .findFirst();
+
+        if (object != null) {
+            mSubscribes.add(object
+                    .asObservable()
+                    .subscribe(this::updateMapMarkers));
+        }
     }
 
     private void unsubscribeFromRealm() {
@@ -104,11 +109,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mRealm.close();
     }
 
-    private void updateMapMarkers(RealmResults<Loc> locs) {
-        if (mMap == null || getResources().getBoolean(R.bool.isTablet)) {
+    private void updateMapMarkers(RealmObject locs) {
+        if (mMap == null || !getResources().getBoolean(R.bool.isTablet)) {
             return;
         }
-        Loc loc = locs.get(0);
+        Loc loc = (Loc) locs;
         mMap.clear();
         mMap.addMarker(new MarkerOptions().position(new LatLng(
                 loc.getLatitude(),
