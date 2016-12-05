@@ -3,7 +3,11 @@ package com.abramov.artyom.parentcontrol.services.sockets.server;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.abramov.artyom.parentcontrol.domain.Call;
+import com.abramov.artyom.parentcontrol.domain.DataObject;
 import com.abramov.artyom.parentcontrol.domain.Loc;
+import com.abramov.artyom.parentcontrol.domain.Sms;
+import com.abramov.artyom.parentcontrol.model.BaseModel;
 import com.abramov.artyom.parentcontrol.utils.DeviceUtils;
 import com.abramov.artyom.parentcontrol.utils.Logger;
 import com.google.gson.Gson;
@@ -22,6 +26,7 @@ public class SocketServerThread extends AsyncTask<Void, Void, Void> {
     private static final String TAG = SocketServerThread.class.getSimpleName();
     private ServerSocket mServerSocket;
     private Gson mGson;
+    private BaseModel mBaseModel;
     private Context mContext;
 
     public SocketServerThread(Context context) {
@@ -33,6 +38,7 @@ public class SocketServerThread extends AsyncTask<Void, Void, Void> {
         super.onPreExecute();
 
         mGson = new Gson();
+        mBaseModel = new BaseModel();
     }
 
     @Override
@@ -51,10 +57,6 @@ public class SocketServerThread extends AsyncTask<Void, Void, Void> {
     }
 
     private void sendReply() {
-        Loc loc = new Loc("test marker",
-                DeviceUtils.getDeviceId(mContext),
-                54.357971,
-                48.379740);
 
         OutputStream outputStream;
         Socket socket;
@@ -69,10 +71,15 @@ public class SocketServerThread extends AsyncTask<Void, Void, Void> {
             return;
         }
 
+        DataObject object = new DataObject(
+                mBaseModel.getItems(Sms.class),
+                mBaseModel.getItems(Call.class),
+                mBaseModel.getItems(Loc.class));
+
         try {
             outputStream = socket.getOutputStream();
             PrintStream printStream = new PrintStream(outputStream);
-            printStream.print(mGson.toJson(loc));
+            printStream.print(mGson.toJson(object));
             printStream.close();
             Logger.d(TAG, "Reply was sent");
 
@@ -87,7 +94,18 @@ public class SocketServerThread extends AsyncTask<Void, Void, Void> {
             BufferedReader in =
                     new BufferedReader(
                             new InputStreamReader(socket.getInputStream()));
+            /*String result = "";
+            if (in.ready()) {
+                result = in.readLine();
+            }
 
+            if (result.equals(Call.class.getName())) {
+                mCurrentDataClass = Call.class.getClass();
+            } else if (result.equals(Loc.class.getName())) {
+                mCurrentDataClass = Loc.class.getClass();
+            } else if (result.equals(Sms.class.getName())) {
+                mCurrentDataClass = Sms.class.getClass();
+            }*/
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -3,21 +3,28 @@ package com.abramov.artyom.parentcontrol.services.sockets.client;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
+import com.abramov.artyom.parentcontrol.domain.Call;
+import com.abramov.artyom.parentcontrol.domain.DataObject;
 import com.abramov.artyom.parentcontrol.domain.Loc;
+import com.abramov.artyom.parentcontrol.domain.Sms;
 import com.abramov.artyom.parentcontrol.model.BaseModel;
 import com.abramov.artyom.parentcontrol.utils.Logger;
 import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.StringReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class SocketClientThread extends AsyncTask<String, Void, Void> {
     private static final String TAG = SocketClientThread.class.getSimpleName();
     private Socket mSocket;
-    private String mResponse = "";
+    private StringBuilder mResponse = new StringBuilder("");
     private Gson mGson;
     private BaseModel mBaseModel;
 
@@ -50,11 +57,16 @@ public class SocketClientThread extends AsyncTask<String, Void, Void> {
              */
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 byteArrayOutputStream.write(buffer, 0, bytesRead);
-                tmp = byteArrayOutputStream.toString("UTF-8");
+                /*tmp = byteArrayOutputStream.toString("UTF-8");
+                byteArrayOutputStream.reset();*/
 
-                if (!TextUtils.isEmpty(tmp)) {
-                    mResponse += tmp;
-                }
+                mResponse.append(byteArrayOutputStream.toString());
+
+                byteArrayOutputStream.reset();
+
+                /*if (!TextUtils.isEmpty(tmp)) {
+                    mResponse.append(tmp.trim());
+                }*/
             }
 
             Logger.d(TAG, "Reply was received");
@@ -77,10 +89,11 @@ public class SocketClientThread extends AsyncTask<String, Void, Void> {
             return null;
         }
 
-        Loc response = mGson.fromJson(mResponse, Loc.class);
-        mBaseModel.saveItem(response);
+        DataObject object = mGson.fromJson(mResponse.toString(), DataObject.class);
 
-        Logger.d(TAG, "Response is : " + response);
+        Logger.d(TAG, "Response is : " + object);
+
+        saveData(object);
 
         return null;
     }
@@ -88,5 +101,12 @@ public class SocketClientThread extends AsyncTask<String, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
+    }
+
+    private void saveData(DataObject object) {
+        mBaseModel.saveItems(object.getSmsList());
+        mBaseModel.saveItems(object.getCallList());
+        mBaseModel.saveItem(object.getLocList().get(0));
+
     }
 }

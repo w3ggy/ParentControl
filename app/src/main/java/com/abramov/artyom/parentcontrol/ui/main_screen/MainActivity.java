@@ -88,7 +88,12 @@ public class MainActivity extends AppCompatActivity
         getSupportActionBar().setHomeButtonEnabled(true);
 
         changeFragment(new MapFragment());
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getData();
         startService(new Intent(this, LocationService.class));
     }
 
@@ -164,20 +169,18 @@ public class MainActivity extends AppCompatActivity
             changeFragment(mCurrentFragment == null ? CallsFragment.getInstance() : mCurrentFragment);
             setTitle(getString(R.string.calls_title));
         } else if (id == R.id.nav_share) {
-            Intent intent = new Intent(this, DataService.class);
-            intent.setAction(Constants.ACTION_CALLS);
-            startService(intent);
 
-            intent = new Intent(this, DataService.class);
-            intent.setAction(Constants.ACTION_SMS);
-            startService(intent);
         } else if (id == R.id.nav_send) {
-            Intent intent = new Intent(this, DataService.class);
-            intent.setAction(Constants.ACTION_LOCATION);
-            startService(intent);
+
         }
 
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void getData() {
+        Intent intent = new Intent(this, DataService.class);
+        intent.setAction(Constants.ACTION_ALL_DATA);
+        startService(intent);
     }
 }

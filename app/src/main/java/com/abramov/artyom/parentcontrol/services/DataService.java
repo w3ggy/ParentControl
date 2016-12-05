@@ -72,7 +72,13 @@ public class DataService extends IntentService {
                 break;
 
             case Constants.ACTION_LOCATION:
-                getLocation();
+                mBaseModel.saveItem(getLocation());
+                break;
+
+            case Constants.ACTION_ALL_DATA:
+                mBaseModel.saveItems(getCalls());
+                mBaseModel.saveItems(getSMS());
+                mBaseModel.saveItem(getLocation());
                 break;
         }
     }
@@ -110,20 +116,21 @@ public class DataService extends IntentService {
         return calls;
     }
 
-    private void getLocation() {
+    private Loc getLocation() {
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
+            return new Loc();
         }
 
         Location location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        mBaseModel.saveItem(new Loc(
+
+        return new Loc(
                 DeviceUtils.getDeviceId(DataService.this),
                 DeviceUtils.getDeviceId(DataService.this),
                 location.getLatitude(),
-                location.getLongitude()));
+                location.getLongitude());
     }
 }
